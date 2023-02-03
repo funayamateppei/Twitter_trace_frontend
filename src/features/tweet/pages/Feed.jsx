@@ -4,26 +4,53 @@ import { Box } from '@/components/atoms';
 import axios from '@/libs/axios';
 import { HeaderAvator ,TweetItem, AddTweetButton } from '@/components/common';
 import { AppPage } from '@/components/layout/AppPage';
+import useInfinityScroll from '@/hooks/useInfinityScroll';
 
 export const Feed = () => {
 
   const [tweets, setTweets] = useState([]);
-
-  const fetchData = async () => {
+  
+  // 無限スクロール
+  const LIMIT = 20;
+  const [scrollRef, _, setPaged, isLoading, setIsLoading] = useInfinityScroll(async currentPage => {
     try {
-      const res = await axios.get('/tweet');
-      console.log(res.data);
-      setTweets(res.data);
-    }
-    catch (e) {
-      console.error(e);
-      alert(e.message);
-    }
-  }
+      if (isLoading) return;
 
-    useEffect(() => {
-      fetchData();
-    }, [])
+      setIsLoading(true);
+
+      const params = {
+        LIMIT,
+        paged: currentPage,
+      };
+      const response = await axios.get('/tweet', {params});
+
+      if (response.data.length < LIMIT) setPaged(0);
+
+      const newItems = currentPage === 1 ? response.data : [...tweets, ...response.data];
+      setTweets(newItems);
+    } catch (e) {
+      console.error(e);
+      alert('ツイートを読み込めませんでした');
+    } finally {
+      setIsLoading(false);
+    }
+  });
+
+  // const fetchData = async () => {
+  //   try {
+  //     const res = await axios.get('/tweet');
+  //     console.log(res.data);
+  //     setTweets(res.data);
+  //   }
+  //   catch (e) {
+  //     console.error(e);
+  //     alert(e.message);
+  //   }
+  // }
+
+  //   useEffect(() => {
+  //     fetchData();
+  //   }, [])
   
   const headerOption = {
     headerLeft: <HeaderAvator user={null} />,
@@ -47,6 +74,7 @@ export const Feed = () => {
             </div>
           )
         })}
+        <div ref={scrollRef} />
       </Box>
       <AddTweetButton />
     </AppPage>
