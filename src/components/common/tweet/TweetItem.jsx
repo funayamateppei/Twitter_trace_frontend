@@ -52,8 +52,10 @@ export const TweetItem = ({ item }) => {
     setIsShowDialog(!isLogin);
 
     if (!isLogin) return;
-    
-    icon === 'comment' ? null : await tweetAction(item.id, icon);
+
+    icon === 'comment'
+      ? navigate('/post/tweet', { state: { commentTo: item.id } })
+      : await tweetAction(item.id, icon);
     console.log(`${icon} click`);
   };
 
