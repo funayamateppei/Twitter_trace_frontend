@@ -1,11 +1,18 @@
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 import {IconButton, Icon} from '@/components/atoms';
 import {Colors} from '@/assets/styles';
 
 export const AddTweetButton = () => {
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate('/post/tweet');
+  }
+
   return (
     <IconButton
       css={button}
+      onClick={onClick}
       size={58}
       color={Colors.KeyColor.Primary}
       icon={<Icon.PlusIcon size={24} color="#FFFFFF" />}

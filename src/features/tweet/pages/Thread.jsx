@@ -151,7 +151,7 @@ const handleStatusIconClick = async (targetId, type) => {
           <Input css={input} placeholder="返信をツイート" />
         </Pressable>
       </Box>
-      </AppPage>
+    </AppPage>
   )
 };
 

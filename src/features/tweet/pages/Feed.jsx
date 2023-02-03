@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {css} from '@emotion/react';
 import { Box } from '@/components/atoms';
 import axios from '@/libs/axios';
-import { HeaderAvator ,TweetItem } from '@/components/common';
+import { HeaderAvator ,TweetItem, AddTweetButton } from '@/components/common';
 import { AppPage } from '@/components/layout/AppPage';
 
 export const Feed = () => {
@@ -48,6 +48,7 @@ export const Feed = () => {
           )
         })}
       </Box>
+      <AddTweetButton />
     </AppPage>
   );
 };
