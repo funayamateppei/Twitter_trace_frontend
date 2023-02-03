@@ -27,7 +27,11 @@ export const TweetStatusIcon = ({icon, isActive: _isActive, count: _count, onCli
 
   const handleStatusIconClick = async e => {
     try {
-      onClick(icon);
+      const isNext = onClick(icon);
+
+      if (isNext === undefined) {
+        return;
+      }
 
       setCount(isActive ? count - 1 : count + 1);
       setIsActive(!isActive);

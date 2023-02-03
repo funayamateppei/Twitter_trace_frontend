@@ -52,14 +52,13 @@ export const TweetItem = ({ item }) => {
 
     if (!isLogin) {
       return
-    } else {
-      console.log(`${icon} click`);
-    }
+    } 
+    console.log(`${icon} click`);
   };
 
   return (
     <>
-      <AuthDialog isShow={isShowDialog} onBackgroundClick={() => setIsShowDialog(false)}>
+      <AuthDialog isShow={isShowDialog} onBackgroundClick={() => setIsShowDialog(false)} />
         <Box onClick={() => navigate(`/tweet/${item.id}`)}>
           <Box row css={container}>
             <Box>
@@ -123,7 +122,6 @@ export const TweetItem = ({ item }) => {
             </Box>
           </Box>
         </Box>
-      </AuthDialog>
     </>
   );
 };
