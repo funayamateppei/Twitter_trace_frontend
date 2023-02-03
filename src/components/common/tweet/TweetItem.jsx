@@ -5,9 +5,14 @@ import {Box, Avator, Pressable, Text} from '@/components/atoms';
 import {Colors} from '@/assets/styles';
 import {CONTENT_WIDTH} from '@/config';
 import {TweetStatusIcon} from './TweetStatusIcon';
-import {TweetImages} from './TweetImages';
+import { TweetImages } from './TweetImages';
+import { checkLogin } from '@/utils/auth';
+import { AuthDialog } from '@/components/auth/AuthDialog';
+import { useState } from 'react';
 
 export const TweetItem = ({ item }) => {
+  const [isShowDialog, setIsShowDialog] = useState(false);
+
   const navigate = useNavigate();
   // console.log(item);
   const {user, body, created_at, images, ...statusData} = item;
@@ -39,72 +44,87 @@ export const TweetItem = ({ item }) => {
   };
 
   const handleIconClick = icon => {
-    console.log(`${icon} click`);
+    const isLogin = checkLogin();
+
+    // ログインしている状態ではisLoginがtrueとなる
+    // ログインしているかしていないかの逆でダイアログを表示するかしないかを判断
+    setIsShowDialog(!isLogin);
+
+    if (!isLogin) {
+      return
+    } else {
+      console.log(`${icon} click`);
+    }
   };
 
   return (
-    <Box onClick={() => navigate(`/tweet/${item.id}`)}>
-      <Box row css={container}>
-        <Box>
-          <Avator image={user.avator} size={48} />
-        </Box>
-        <Box css={content}>
-          {/* ToDo */}
-          <Box css={textField}>
-            <Box row css={header} alignItems="center" justifyContent="space-between">
-              <Box row alignItems="center">
-                <div css={userWrap}>
-                  <Text fontWeight={700} css={{textOverflow: 'ellipsis'}}>
-                    {user.name}
-                  </Text>
-                  <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
-                    @{user.account_name}
-                  </Text>
-                </div>
-                <Box row css={time} alignItems="center">
-                  <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
-                    •
-                  </Text>
-                  <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
-                    {calcCreatedDiff(created_at)}.
-                  </Text>
+    <>
+      <AuthDialog isShow={isShowDialog} onBackgroundClick={() => setIsShowDialog(false)}>
+        <Box onClick={() => navigate(`/tweet/${item.id}`)}>
+          <Box row css={container}>
+            <Box>
+              <Avator image={user.avator} size={48} />
+            </Box>
+            <Box css={content}>
+              {/* ToDo */}
+              <Box css={textField}>
+                <Box row css={header} alignItems="center" justifyContent="space-between">
+                  <Box row alignItems="center">
+                    <div css={userWrap}>
+                      <Text fontWeight={700} css={{textOverflow: 'ellipsis'}}>
+                        {user.name}
+                      </Text>
+                      <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
+                        @{user.account_name}
+                      </Text>
+                    </div>
+                    <Box row css={time} alignItems="center">
+                      <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
+                        •
+                      </Text>
+                      <Text css={text} fontSize={12} color={Colors.Text.Seconday}>
+                        {calcCreatedDiff(created_at)}.
+                      </Text>
+                    </Box>
+                  </Box>
+                </Box>
+                <Box css={tweetBody}>
+                  <Text>{body}</Text>
+                  {!!images.length && (
+                    <Box css={imageWrap}>
+                      <TweetImages images={images} />
+                    </Box>
+                  )}
                 </Box>
               </Box>
-            </Box>
-            <Box css={tweetBody}>
-              <Text>{body}</Text>
-              {!!images.length && (
-                <Box css={imageWrap}>
-                  <TweetImages images={images} />
-                </Box>
-              )}
-            </Box>
-          </Box>
 
-          <Box row css={iconWrap} justifyContent="space-between" alignItems="center" onClick={eventCancel}>
-            <TweetStatusIcon
-              icon="comment"
-              isActive={statusData.is_commented}
-              count={statusData.comment_count}
-              onClick={handleIconClick}
-            />
-            <TweetStatusIcon
-              id={item.id}
-              icon="retweet"
-              isActive={statusData.is_retweeted}
-              count={statusData.retweet_count}
-              onClick={handleIconClick}
-            />
-            <TweetStatusIcon
-              icon="like"
-              isActive={statusData.is_liked}
-              count={statusData.like_count}
-              onClick={handleIconClick}
-            />
+              
+                <Box row css={iconWrap} justifyContent="space-between" alignItems="center" onClick={eventCancel}>
+                  <TweetStatusIcon
+                    icon="comment"
+                    isActive={statusData.is_commented}
+                    count={statusData.comment_count}
+                    onClick={handleIconClick}
+                  />
+                <TweetStatusIcon
+                  id={item.id}
+                  icon="retweet"
+                  isActive={statusData.is_retweeted}
+                  count={statusData.retweet_count}
+                  onClick={handleIconClick}
+                />
+                <TweetStatusIcon
+                  icon="like"
+                  isActive={statusData.is_liked}
+                  count={statusData.like_count}
+                  onClick={handleIconClick}
+                />
+              </Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Box>
+      </AuthDialog>
+    </>
   );
 };
 
