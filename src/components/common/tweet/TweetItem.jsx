@@ -9,6 +9,7 @@ import { TweetImages } from './TweetImages';
 import { checkLogin } from '@/utils/auth';
 import { AuthDialog } from '@/components/auth/AuthDialog';
 import { useState } from 'react';
+import { tweetAction } from '@/api';
 
 export const TweetItem = ({ item }) => {
   const [isShowDialog, setIsShowDialog] = useState(false);
@@ -43,16 +44,16 @@ export const TweetItem = ({ item }) => {
     console.log('tweet click');
   };
 
-  const handleIconClick = icon => {
+  const handleIconClick = async icon => {
     const isLogin = checkLogin();
 
     // ログインしている状態ではisLoginがtrueとなる
     // ログインしているかしていないかの逆でダイアログを表示するかしないかを判断
     setIsShowDialog(!isLogin);
 
-    if (!isLogin) {
-      return
-    } 
+    if (!isLogin) return;
+    
+    icon === 'comment' ? null : await tweetAction(item.id, icon);
     console.log(`${icon} click`);
   };
 
