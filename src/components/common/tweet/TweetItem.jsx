@@ -1,6 +1,6 @@
 import {css} from '@emotion/react';
 import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {Box, Avator, Pressable, Text} from '@/components/atoms';
 import {Colors} from '@/assets/styles';
 import {CONTENT_WIDTH} from '@/config';
@@ -8,7 +8,8 @@ import {TweetStatusIcon} from './TweetStatusIcon';
 import {TweetImages} from './TweetImages';
 
 export const TweetItem = ({ item }) => {
-  console.log(item);
+  const navigate = useNavigate();
+  // console.log(item);
   const {user, body, created_at, images, ...statusData} = item;
 
   const calcCreatedDiff = createdAt => {
@@ -42,7 +43,7 @@ export const TweetItem = ({ item }) => {
   };
 
   return (
-    <Link to={`/tweet/${item.id}`}>
+    <Box onClick={() => navigate(`/tweet/${item.id}`)}>
       <Box row css={container}>
         <Box>
           <Avator image={user.avator} size={48} />
@@ -103,7 +104,7 @@ export const TweetItem = ({ item }) => {
           </Box>
         </Box>
       </Box>
-    </Link>
+    </Box>
   );
 };
 
